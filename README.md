@@ -544,10 +544,6 @@ black src/
 flake8 src/
 ```
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Disclaimer
 
 This tool is for educational and personal use. Users are responsible for:
@@ -563,7 +559,7 @@ Videos created by this tool should be reviewed before uploading to any social me
 
 - **Issues**: [GitHub Issues](https://github.com/yourusername/reddit-tiktok-agent/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/yourusername/reddit-tiktok-agent/discussions)
-- **Email**: your-email@example.com
+- **Email**: adjosc@umich.edu
 
 ## Acknowledgments
 
