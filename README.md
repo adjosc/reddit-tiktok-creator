@@ -83,32 +83,38 @@ python main_agent.py
 ## Project Structure
 
 ```
-reddit-video-creator/
-├── src/
-│   ├── __init__.py
-│   ├── main_agent.py           # Main LangGraph workflow
-│   ├── reddit_fetcher.py       # Reddit API integration
-│   ├── content_assessor.py     # AI content evaluation
-│   ├── tts_generator.py        # Text-to-speech generation
-│   ├── video_creator.py        # Video creation and editing
-│   └── video_organizer.py      # Video organization and metadata
-├── tests/
-│   ├── test_components.py      # Component testing
-│   └── test_integration.py     # End-to-end testing
-├── output_videos/
-│   ├── [generated videos]      # Created video files
-│   ├── video_metadata.json     # Video metadata and captions
-│   └── audio/                  # Generated TTS files
-├── assets/
-│   ├── fonts/                  # Custom fonts for videos
+reddit-tiktok-creator/
+├── src/                        # Core source code
+│   ├── __init__.py             # Package initialization
+│   ├── main_agent.py           # Main LangGraph workflow orchestrator
+│   ├── reddit_fetcher.py       # Reddit API integration & content filtering
+│   ├── content_assessor.py     # AI content evaluation using Claude
+│   ├── tts_generator.py        # Text-to-speech generation (OpenAI/Edge)
+│   ├── video_creator.py        # Video creation and editing with MoviePy
+│   └── video_organizer.py      # Video organization and metadata management
+├── config/                     # Configuration management
+│   └── settings.py             # Centralized configuration system
+├── tests/                      # Test suite
+│   ├── test_components.py      # Component unit tests
+│   └── test_integration.py     # End-to-end integration tests
+├── output_videos/              # Generated content (auto-created)
+│   ├── ready_to_upload/        # Videos ready for TikTok upload
+│   ├── uploaded/               # Successfully uploaded videos
+│   ├── archive/                # Archived old videos
+│   ├── audio/                  # Generated TTS audio files
+│   ├── logs/                   # System and error logs
+│   └── video_metadata.json     # Video metadata and upload suggestions
+├── assets/                     # Static assets (auto-created)
+│   ├── fonts/                  # Custom fonts for video text
 │   └── backgrounds/            # Video background templates
-├── config/
-│   └── settings.py             # Configuration management
-├── requirements.txt
-├── .env.example
-├── .gitignore
-├── README.md
-└── scheduler.py                # Automated video creation
+├── main.py                     # Main CLI entry point
+├── quick_start.py              # Guided setup for new users
+├── scheduler.py                # Automated video creation scheduler
+├── setup.py                    # Package installation script
+├── requirements.txt            # Python dependencies
+├── .env.example                # Environment configuration template
+├── .gitignore                  # Git ignore rules
+└── README.md                   # This documentation
 ```
 
 ## Configuration
@@ -154,62 +160,114 @@ CONTENT_FILTERS = {
 
 ## Usage Examples
 
-### Basic Video Creation
+### Command Line Interface
+
+The system provides a comprehensive CLI for all operations:
+
+```bash
+# Basic video creation
+python main.py create                    # Create one video with default settings
+python main.py create --count 3          # Create 3 videos in batch
+python main.py create --preset high_quality  # Use high-quality preset
+
+# Advanced creation options
+python main.py create --subreddits funny tifu memes --min-rating 8.0
+python main.py create --style dynamic --voice funny_male
+python main.py create --count 5 --preset family_friendly
+
+# Video management
+python main.py list                      # List created videos
+python main.py list --limit 20           # Show last 20 videos
+python main.py status                    # Show system status and statistics
+
+# Configuration
+python main.py config --show             # Display current configuration
+python main.py config --validate         # Validate configuration
+python main.py config --create-example   # Create example .env file
+
+# Testing and setup
+python main.py setup                     # Run initial setup
+python main.py test                      # Test all components
+python main.py test --component reddit   # Test specific component
+
+# Upload queue management
+python main.py queue --show              # Show videos ready for upload
+python main.py queue --clear             # Clear upload queue
+```
+
+### Programmatic Usage
 
 ```python
 import asyncio
 from src.main_agent import RedditTikTokAgent
 
-async def main():
-    agent = RedditTikTokAgent()
+async def create_video():
+    # Initialize with custom config
+    config = {
+        'subreddits': ['funny', 'tifu'],
+        'min_humor_rating': 8.0,
+        'video_style': 'modern',
+        'voice_style': 'funny_male'
+    }
+    
+    agent = RedditTikTokAgent(config)
     result = await agent.run()
-    print(f"Status: {result['creation_status']}")
-    print(f"Video: {result['video_path']}")
+    
+    if result['creation_status'] == 'success':
+        print(f"Video created: {result['video_path']}")
+        return result['video_path']
+    else:
+        print(f"Failed: {result['error_message']}")
 
-asyncio.run(main())
+# Run the agent
+video_path = asyncio.run(create_video())
 ```
 
-### View Created Videos
+### Batch Video Creation
 
 ```python
-from src.video_organizer import VideoOrganizer
+from src.main_agent import RedditTikTokAgent
 
-# List all created videos with metadata
-organizer = VideoOrganizer()
-organizer.list_created_videos()
+# Create multiple videos with different settings
+agent = RedditTikTokAgent()
+
+# High-quality batch
+results = agent.run_batch(count=3, min_humor_rating=8.5, video_style='dynamic')
+
+# Show results
+for i, result in enumerate(results, 1):
+    status = result['creation_status']
+    print(f"Video {i}: {status}")
 ```
 
-### Custom Content Selection
+### Automated Scheduling
 
-```python
-from src.reddit_fetcher import RedditFetcher
-from src.content_assessor import ContentAssessor
+```bash
+# Start automated video creation
+python scheduler.py start                # Run continuously
+python scheduler.py once                 # Create one video now
+python scheduler.py status               # Check scheduler status
 
-# Fetch from specific subreddit
-fetcher = RedditFetcher()
-posts = fetcher.get_funny_posts(subreddits=['programmerhumor'], limit=10)
-
-# Assess with custom criteria
-assessor = ContentAssessor()
-top_posts = assessor.assess_humor_quality(posts, min_rating=8)
+# With custom configuration
+python scheduler.py start --preset high_volume
 ```
 
-### Manual Video Creation
+### Advanced Configuration
 
 ```python
-from src.video_creator import VideoCreator
-from src.tts_generator import TTSGenerator
+from config.settings import ConfigManager, load_preset
 
-# Create custom video
-tts = TTSGenerator()
-video_creator = VideoCreator()
+# Load and customize configuration
+config_manager = ConfigManager()
+config = config_manager.get_agent_config()
 
-# Generate audio
-await tts.generate_speech_openai("Your funny text here", "audio.mp3")
+# Apply preset and overrides
+preset_config = load_preset('high_quality')
+config.update(preset_config)
+config['subreddits'] = ['tifu', 'confession']
 
-# Create video
-video_path = video_creator.create_tiktok_video(post_data, "audio.mp3")
-print(f"Video created: {video_path}")
+# Use with agent
+agent = RedditTikTokAgent(config)
 ```
 
 ## Testing
@@ -242,47 +300,98 @@ python tests/test_with_samples.py
 
 ## Automation & Scheduling
 
-### Continuous Video Creation
+### Intelligent Scheduler
+
+The built-in scheduler creates videos automatically with smart timing and quality control:
 
 ```bash
-# Create videos every 4 hours
-python scheduler.py
+# Start continuous automated creation
+python scheduler.py start
+
+# Create one video immediately
+python scheduler.py once
+
+# Check scheduler status and statistics
+python scheduler.py status
+
+# View scheduler configuration
+python scheduler.py config
 ```
 
-### Batch Video Creation
+### Scheduler Features
 
-```python
-# Create multiple videos in one run
-import asyncio
-from src.main_agent import RedditTikTokAgent
+- **Smart Timing**: Creates videos during optimal hours
+- **Quality Control**: Only creates high-rated content
+- **Quiet Hours**: Respects sleep/work schedules
+- **Daily Limits**: Prevents spam with configurable limits
+- **Error Recovery**: Automatically retries failed attempts
+- **Performance Tracking**: Monitors success rates and quality
 
-async def create_batch():
-    agent = RedditTikTokAgent()
-    
-    for i in range(5):  # Create 5 videos
-        print(f"Creating video {i+1}/5...")
-        result = await agent.run()
-        print(f"Video {i+1} status: {result['creation_status']}")
+### Configuration Options
 
-asyncio.run(create_batch())
+Set these in your `.env` file:
+
+```env
+# Scheduling settings
+SCHEDULE_INTERVAL_HOURS=4              # Create videos every 4 hours
+SCHEDULE_MAX_VIDEOS_PER_DAY=6          # Maximum daily videos
+SCHEDULE_MIN_GAP_MINUTES=30            # Minimum time between videos
+
+# Timing preferences
+SCHEDULE_PEAK_HOURS=12-14,19-21        # Higher quality during peak times
+SCHEDULE_QUIET_HOURS=23-6              # No creation during quiet hours
+SCHEDULE_WEEKEND_ENABLED=true          # Enable weekend creation
+
+# Quality settings
+SCHEDULE_SKIP_LOW_QUALITY=true         # Skip videos below threshold
+CONTENT_MIN_HUMOR_RATING=7.0           # Minimum quality score
 ```
 
-### Cron Job Setup (Linux/macOS)
+### Manual Control
+
+```bash
+# Run scheduler with custom settings
+SCHEDULE_INTERVAL_HOURS=2 python scheduler.py start
+
+# One-time creation with specific config
+python main.py create --preset high_quality --count 3
+```
+
+### Cron Job Setup
+
+For production deployment:
 
 ```bash
 # Edit crontab
 crontab -e
 
-# Add line to create videos every 4 hours
-0 */4 * * * cd /path/to/reddit-video-creator && python main_agent.py
+# Add scheduled execution (every 4 hours)
+0 */4 * * * cd /path/to/reddit-tiktok-creator && python scheduler.py once
+
+# Or run continuously as a service
+@reboot cd /path/to/reddit-tiktok-creator && python scheduler.py start
 ```
 
 ### Windows Task Scheduler
 
 1. Open Task Scheduler
 2. Create Basic Task
-3. Set trigger to "Daily" and repeat every 4 hours
-4. Set action to start `python.exe` with argument `main_agent.py`
+3. Set trigger: "Daily" with repeat every 4 hours
+4. Set action: Start `python.exe` with argument `scheduler.py once`
+5. Set start in: Your project directory
+
+### Monitoring
+
+```bash
+# View detailed logs
+tail -f output_videos/logs/scheduler.log
+
+# Check system performance
+python main.py status
+
+# View creation statistics
+python scheduler.py status
+```
 
 ## Monitoring & Analytics
 
@@ -435,7 +544,7 @@ black src/
 flake8 src/
 ```
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
