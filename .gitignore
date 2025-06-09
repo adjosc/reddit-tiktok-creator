@@ -1,1 +1,288 @@
+# Reddit to TikTok Video Creator - .gitignore
 
+# Environment variables and secrets
+.env
+.env.local
+.env.production
+*.key
+*.pem
+config.json
+secrets.json
+
+# API Keys and Credentials
+reddit_credentials.json
+tiktok_credentials.json
+anthropic_key.txt
+openai_key.txt
+
+# Output directories
+output_videos/
+!output_videos/.gitkeep
+generated_videos/
+temp_videos/
+video_exports/
+
+# Audio files
+*.mp3
+*.wav
+*.m4a
+*.aac
+*.flac
+
+# Video files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Image files (generated)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+generated_images/
+thumbnails/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.vscode/settings.json
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# Logs
+*.log
+logs/
+scheduler.log
+agent.log
+debug.log
+error.log
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+*.tmp
+*.temp
+.cache/
+
+# Browser automation files
+chrome_profile/
+browser_data/
+selenium_logs/
+
+# System files
+Thumbs.db
+.DS_Store
+*.lnk
+
+# Backup files
+*.bak
+*.backup
+*.old
+*_backup.*
+
+# Compressed files
+*.zip
+*.rar
+*.7z
+*.tar.gz
+*.tar.bz2
+
+# Configuration overrides
+local_config.py
+custom_settings.py
+override_config.json
+
+# Runtime files
+*.pid
+*.sock
+*.lock
+
+# Package files
+*.deb
+*.rpm
+*.pkg
+*.dmg
+*.msi
+
+# Documentation build files
+docs/_build/
+site/
+
+# Asset files (unless specifically needed)
+assets/fonts/
+assets/backgrounds/custom/
+assets/temp/
+
+# Statistics and analytics
+stats.json
+analytics.json
+performance.json
+usage_stats.json
+
+# User-specific files
+user_preferences.json
+personal_config.json
+my_config.py
+
+# Development and testing
+test_output/
+test_videos/
+sample_output/
+debug_files/
+
+# CI/CD
+.github/workflows/personal/
+.travis.yml.local
+.gitlab-ci.local.yml
+
+# Security
+*.pkey
+*.cert
+*.crt
+*.p12
+*.keystore
+
+# Monitoring
+monitoring/
+metrics/
+performance_logs/
+
+# Third-party service files
+.vercel
+.netlify
+.now
+
+# Local development
+local/
+dev/
+development/
+
+# Backup and sync
+.sync/
+.dropbox
+.icloud
+
+# Mobile development
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Node.js (if using any JS tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# macOS
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+desktop.ini
+ehthumbs.db
+ehthumbs_vista.db
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Keep essential directories but ignore contents
+!logs/.gitkeep
+!output_videos/.gitkeep
+!assets/.gitkeep
+!temp/.gitkeep
+
+# Keep example files
+!.env.example
+!config.example.json
+!sample_data/
