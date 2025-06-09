@@ -1,0 +1,13 @@
+langgraph
+langchain
+anthropic
+openai
+praw  # Reddit API wrapper
+moviepy  # Video editing
+pillow  # Image processing
+requests
+python-dotenv
+tiktokapipy  # TikTok unofficial API
+edge-tts  # Alternative TTS option
+beautifulsoup4
+selenium  # For web automation if needed
